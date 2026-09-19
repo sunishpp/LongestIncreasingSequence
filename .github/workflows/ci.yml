@@ -33,8 +33,24 @@ jobs:
         run: ./scripts/lint.ps1
 
       - name: Run tests with coverage
-        shell: pwsh
-        run: ./scripts/test-coverage.ps1
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$GITHUB_WORKSPACE/coverage"
+          mkdir -p "$GITHUB_WORKSPACE/coverage"
+          dotnet test "$GITHUB_WORKSPACE/tests/LongestIncreasingSubsequence.Tests/LongestIncreasingSubsequence.Tests.csproj" \
+            --configuration Release \
+            --no-restore \
+            --collect:"XPlat Code Coverage" \
+            --results-directory "$GITHUB_WORKSPACE/coverage" \
+            --logger "trx;LogFileName=test-results.trx"
+
+      - name: Inspect coverage output
+        if: always()
+        shell: bash
+        run: |
+          find "$GITHUB_WORKSPACE/coverage" -maxdepth 3 -type f -print
+          test -n "$(find "$GITHUB_WORKSPACE/coverage" -name coverage.cobertura.xml -print -quit)"
 
       - name: Upload coverage report
         if: always()
