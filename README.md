@@ -45,7 +45,7 @@ Generate a Cobertura coverage report:
 .\scripts\test-coverage.ps1
 ```
 
-The script runs all tests and prints the report path. The report is written under `.coverage` as `coverage.cobertura.xml`. The `.coverage` directory is generated output and is ignored by Git.
+The script runs all tests and prints the report path. The report is written under `coverage` as `coverage.cobertura.xml`. The `coverage` directory is generated output and is ignored by Git.
 
 ## Docker
 

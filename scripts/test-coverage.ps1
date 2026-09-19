@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
-$coverageDirectory = Join-Path $repositoryRoot '.coverage'
+$coverageDirectory = Join-Path $repositoryRoot 'coverage'
 if (Test-Path $coverageDirectory) {
     Remove-Item $coverageDirectory -Recurse -Force
 }
