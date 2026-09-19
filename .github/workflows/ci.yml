@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore LongestIncreasingSubsequence.sln
+
+      - name: Build with warnings as errors
+        run: dotnet build LongestIncreasingSubsequence.sln --configuration Release --no-restore --warnaserror
+
+      - name: Run lint checks
+        shell: pwsh
+        run: ./scripts/lint.ps1
+
+      - name: Run tests with coverage
+        shell: pwsh
+        run: ./scripts/test-coverage.ps1
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: .coverage
+          if-no-files-found: error
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            .coverage/**/*.trx
+            .coverage/**/*.xml
+          if-no-files-found: warn
