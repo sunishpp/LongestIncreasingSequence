@@ -1,12 +1,14 @@
 $ErrorActionPreference = 'Stop'
 
-$coverageDirectory = Join-Path $PSScriptRoot '..\.coverage'
+$repositoryRoot = Split-Path -Parent $PSScriptRoot
+$coverageDirectory = Join-Path $repositoryRoot '.coverage'
 if (Test-Path $coverageDirectory) {
     Remove-Item $coverageDirectory -Recurse -Force
 }
 New-Item $coverageDirectory -ItemType Directory | Out-Null
 
-dotnet test .\tests\LongestIncreasingSubsequence.Tests\LongestIncreasingSubsequence.Tests.csproj `
+$testProject = Join-Path $repositoryRoot 'tests/LongestIncreasingSubsequence.Tests/LongestIncreasingSubsequence.Tests.csproj'
+dotnet test $testProject `
     --configuration Release `
     --collect:"XPlat Code Coverage" `
     --results-directory $coverageDirectory
